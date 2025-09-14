@@ -1,6 +1,7 @@
 package com.pcProject.ecommerce.controller;
 
 import com.pcProject.ecommerce.model.ProductDetails;
+import com.pcProject.ecommerce.model.ProductQuantityWrap;
 import com.pcProject.ecommerce.service.ProductDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,11 @@ public class ProductDetailsController {
         return productService.getProductDetails(productName);
     }
 
+    @GetMapping("getAllProductDetails")
+    public Object getAllProductDetails(){
+        return productService.getAllProductDetails();
+    }
+
     @PostMapping("addProductDetails")
     public Object addProductDetails(@RequestBody ProductDetails product){
         return productService.addProductDetails(product);
@@ -26,6 +32,11 @@ public class ProductDetailsController {
     @PutMapping("updateProductDetails")
     public Object updateProductDetails(@RequestBody ProductDetails product){
         return productService.updateProductDetails(product);
+    }
+
+    @PutMapping("addToProductQuantity")
+    public Object addToProductQuantity(@RequestBody ProductQuantityWrap productQuantityWrap){
+        return productService.addToProductQuantity(productQuantityWrap);
     }
 
     @DeleteMapping("deleteProductDetails/{productName}")

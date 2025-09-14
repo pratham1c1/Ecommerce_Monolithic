@@ -2,6 +2,7 @@ package com.pcProject.ecommerce.service;
 
 import com.pcProject.ecommerce.model.ProductDetails;
 import com.pcProject.ecommerce.model.UserDetails;
+import com.pcProject.ecommerce.repository.ProductDetailsRepo;
 import com.pcProject.ecommerce.repository.UserDetailsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,8 @@ import java.util.List;
 public class PaymentDetailsService {
     @Autowired
     private UserDetailsRepo userRepo;
+    @Autowired
+    private ProductDetailsRepo productRepo;
 
     public Object getAllPayment(String userName){
         UserDetails existingUser = userRepo.findByUserName(userName);
@@ -28,15 +31,33 @@ public class PaymentDetailsService {
         for(ProductDetails product : orderedProduct)
             totalExpense+= product.getProductValue();
 
-        return new ResponseEntity<>(totalExpense , HttpStatus.PAYMENT_REQUIRED);
+        return new ResponseEntity<>(totalExpense , HttpStatus.OK);
     }
 
+    public Object settleOnePayment(String userName,String productName){
+        UserDetails user = userRepo.findByUserName(userName);
+        if(user == null)
+            return new ResponseEntity<>("User is not registered in the system !",HttpStatus.BAD_REQUEST);
+        List<ProductDetails> allUserProducts = user.getUserProductIds();
+        if(allUserProducts.size() == 0)
+            return new ResponseEntity<>("The Order list is empty !", HttpStatus.OK);
+
+        ProductDetails userProduct = productRepo.findByProductName(productName);
+
+        if(allUserProducts.contains(userProduct)){
+            allUserProducts.remove(userProduct);
+            user.setUserProductIds(allUserProducts);
+            userRepo.save(user);
+            return new ResponseEntity<>("Successfully completed payment for "+productName , HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Something went wrong !" , HttpStatus.BAD_GATEWAY);
+    }
 
     public Object settleAllPayment(String userName){
         Object paymentInfo = getAllPayment(userName);
         ResponseEntity<String> res = (ResponseEntity) paymentInfo;
 
-        if(res.getStatusCode().value() == 402) {
+        if(res.getStatusCode().value() == 200) {
             UserDetails existingUser = userRepo.findByUserName(userName);
             List<ProductDetails> orderedProducts = existingUser.getUserProductIds();
             orderedProducts.clear();
@@ -44,7 +65,7 @@ public class PaymentDetailsService {
             userRepo.save(existingUser);
             return new ResponseEntity<>("Completed your payment.", HttpStatus.OK);
         }
-        else if(res.getStatusCode().value() == 200 || res.getStatusCode().value() == 404)
+        else if(res.getStatusCode().value() != 200 || res.getStatusCode().value() == 404)
             return res;
 
         return new ResponseEntity<>("Something went wrong !" , HttpStatus.BAD_GATEWAY);

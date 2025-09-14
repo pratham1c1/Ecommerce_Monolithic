@@ -1,10 +1,9 @@
 package com.pcProject.ecommerce.controller;
 
 import com.pcProject.ecommerce.model.UserDetails;
+import com.pcProject.ecommerce.model.UserProductNameWrap;
 import com.pcProject.ecommerce.service.UserDetailsService;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,6 +18,16 @@ public class UserDetailsController {
         return userService.getUserProfile(username);
     }
 
+    @GetMapping("getAllUsers")
+    public Object getAllUsers(){
+        return userService.getAllUsers();
+    }
+
+    @GetMapping("getAllUserProducts/{userName}")
+    public Object getAllUserProducts(@PathVariable String userName){
+        return userService.getAllUserProducts(userName);
+    }
+
     @PostMapping("addUserProfile")
     public Object addUserProfile(@RequestBody UserDetails user){
         return userService.addUserProfile(user);
@@ -27,6 +36,11 @@ public class UserDetailsController {
     @PutMapping("updateUserProfile")
     public Object updateUserProfile(@RequestBody UserDetails user){
         return userService.updateUserProfile(user);
+    }
+
+    @PutMapping("removeUserProduct")
+    public Object removeUserProduct(@RequestBody UserProductNameWrap userProduct){
+        return userService.removeUserProduct(userProduct);
     }
 
     @DeleteMapping("deleteUserProfile/{username}")

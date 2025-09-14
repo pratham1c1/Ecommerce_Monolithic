@@ -20,6 +20,7 @@ public class ProductDetails {
     @Column(unique = true)
     private String productName;
     private int productValue;
+    private int productQuantity;
     @ManyToMany(mappedBy = "userProductIds")
     @JsonIgnore
     private List<UserDetails> productUserIds;
