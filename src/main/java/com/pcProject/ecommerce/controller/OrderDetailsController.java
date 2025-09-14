@@ -1,5 +1,6 @@
 package com.pcProject.ecommerce.controller;
 
+import com.pcProject.ecommerce.model.UserProductNameWrap;
 import com.pcProject.ecommerce.service.OrderDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,11 @@ public class OrderDetailsController {
     @GetMapping("getAllOrderDetails/{userName}")
     public Object getAllOrderDetails(@PathVariable String userName){
         return orderService.getAllOrderDetails(userName);
+    }
+
+    @PutMapping("updateOrderDetails")
+    public Object updateOrderDetails(@RequestBody UserProductNameWrap userProductNameWrap){
+        return orderService.updateOrderDetails(userProductNameWrap.getUserName(), userProductNameWrap.getProductName());
     }
 
     // Order a product for a user
