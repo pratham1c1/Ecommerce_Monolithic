@@ -59,5 +59,5 @@ This backend handles all major functionalities of an e-commerce platform inside 
 ### Steps
 1. Clone the repo:
    ```bash
-   git clone https://github.com/pc11hack/Ecommerce_Monolithic.git
+   git clone https://github.com/pratham1c1/Ecommerce_Monolithic.git
    cd Ecommerce_Monolithic
